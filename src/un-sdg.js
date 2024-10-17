@@ -32,13 +32,18 @@ export class unSdg extends DDDSuper(LitElement) {
     this.title = "";
     this.label = "";
     this.goal = '1';
+    this.alt = null;
+    this.imageSRC = new URL('../lib/svgs/circle.png', import.meta.url).href;
   }
+
 
   static get properties() {
     return {
       title: { type: String },
       label: { type: String},
-      goal: { type: int}
+      goal: { type: int, reflect: true},
+      alt: {type: String},
+      imageSRC: {type: String}
     };
   }
 
@@ -65,15 +70,21 @@ export class unSdg extends DDDSuper(LitElement) {
 
   render() {
     return html`
-<div class="wrapper">
-  <div>${this.title}</div>
-  <slot></slot>
-</div>`;
+      <div class="wrapper">
+        <div>${this.title}</div>
+        <slot></slot>
+      </div>`;
   }
 
   /**
    * haxProperties integration via file reference
    */
+  updated(changedProperties) {
+    if (changedProperties.has('goal')) {
+      this.updateGoalImage();
+    }
+  }
+
   static get haxProperties() {
     return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
       .href;
